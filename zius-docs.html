@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zius API Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border: #475569;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --code-bg: #1e293b;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background: var(--bg-secondary);
+            border-bottom: 2px solid var(--primary);
+            padding: 30px 0;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: var(--bg-tertiary);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .tab-btn:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* Cards */
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .api-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .api-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px -2px rgba(99, 102, 241, 0.3);
+        }
+
+        .api-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .api-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .method-badge {
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .method-get {
+            background: var(--success);
+            color: white;
+        }
+
+        .method-post {
+            background: var(--primary);
+            color: white;
+        }
+
+        .endpoint {
+            background: var(--code-bg);
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            border-left: 4px solid var(--primary);
+            margin: 15px 0;
+            color: var(--secondary);
+        }
+
+        .permission {
+            display: inline-block;
+            background: var(--bg-tertiary);
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: var(--warning);
+            margin-top: 10px;
+        }
+
+        /* Parameters */
+        .params-section {
+            margin: 25px 0;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .param {
+            background: var(--bg-tertiary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .param-name {
+            font-weight: 600;
+            color: var(--primary);
+            font-family: 'Courier New', monospace;
+        }
+
+        .param-required {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-left: 8px;
+        }
+
+        .param-type {
+            color: var(--secondary);
+            font-size: 0.85rem;
+            margin-left: 8px;
+        }
+
+        .param-desc {
+            color: var(--text-secondary);
+            margin-top: 8px;
+            font-size: 0.95rem;
+        }
+
+        /* Code Blocks */
+        .code-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .code-header {
+            background: var(--bg-tertiary);
+            padding: 10px 15px;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .code-lang {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .copy-btn {
+            background: var(--primary);
+            border: none;
+            padding: 6px 16px;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .copy-btn.copied {
+            background: var(--success);
+        }
+
+        pre {
+            background: var(--code-bg);
+            padding: 20px;
+            border-radius: 0 0 8px 8px;
+            overflow-x: auto;
+            margin: 0;
+            border: 1px solid var(--border);
+            border-top: none;
+        }
+
+        code {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Response Examples */
+        .response-example {
+            margin-top: 20px;
+        }
+
+        .response-badge {
+            display: inline-block;
+            background: var(--success);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: var(--bg-secondary);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .feature-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Links */
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .link-card {
+            background: var(--bg-tertiary);
+            padding: 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-primary);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .link-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            background: var(--bg-secondary);
+        }
+
+        .link-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .link-url {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            word-break: break-all;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            margin-top: 60px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                width: 100%;
+            }
+
+            .api-header {
+                flex-direction: column;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>⚡ Zius API Documentation</h1>
+            <p class="subtitle">Complete WhatsApp & SMS Gateway Integration Guide</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Navigation -->
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="showSection('overview')">📖 Overview</button>
+            <button class="tab-btn" onclick="showSection('contacts')">👥 Contacts</button>
+            <button class="tab-btn" onclick="showSection('whatsapp')">💬 WhatsApp</button>
+            <button class="tab-btn" onclick="showSection('android')">📱 Android</button>
+            <button class="tab-btn" onclick="showSection('quickstart')">🚀 Quick Start</button>
+        </div>
+
+        <!-- Overview Section -->
+        <div id="overview" class="section active">
+            <div class="api-card">
+                <h2 style="color: var(--primary); margin-bottom: 20px;">Platform Overview</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                    Zius is a comprehensive WhatsApp and SMS gateway platform that enables businesses to automate 
+                    marketing, notifications, and bulk messaging through a powerful API and web dashboard.
+                </p>
+                
+                <div class="endpoint">
+                    <strong>Base URL:</strong> https://zius.uk/api
+                </div>
+                
+                <div class="permission">
+                    🔐 Authentication: API Secret Key Required
+                </div>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3 class="feature-title">Quick & Bulk Sending</h3>
+                    <p class="feature-desc">Send tons of messages to different contact groups easily. Live dashboard notifications for sent/received messages.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3 class="feature-title">WhatsApp Messaging</h3>
+                    <p class="feature-desc">Full WhatsApp API integration with support for text, media, and document messages.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3 class="feature-title">SMS Gateway</h3>
+                    <p class="feature-desc">Use Android devices as SMS gateway - cheaper than third-party gateways.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3 class="feature-title">Automation Tools</h3>
+                    <p class="feature-desc">Schedule messages, webhooks, auto-responses, USSD requests, and more.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3 class="feature-title">Spintax & Shortcodes</h3>
+                    <p class="feature-desc">Randomize messages to battle spam filters. Use predefined data for personalization.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3 class="feature-title">Multi-Language</h3>
+                    <p class="feature-desc">Built-in translator to target audiences based on their native languages.</p>
+                </div>
+            </div>
+
+            <div class="api-card">
+                <h3 style="color: var(--primary); margin-bottom: 20px;">Important Links</h3>
+                <div class="links-grid">
+                    <a href="https://zius.uk/dashboard" class="link-card" target="_blank">
+                        <div class="link-title">🏠 Dashboard</div>
+                        <div class="link-url">zius.uk/dashboard</div>
+                    </a>
+                    <a href="https://zius.uk/dashboard/docs" class="link-card" target="_blank">
+                        <div class="link-title">📚 API Docs</div>
+                        <div class="link-url">zius.uk/dashboard/docs</div>
+                    </a>
+                    <a href="https://zius.uk/dashboard/tools/keys" class="link-card" target="_blank">
+                        <div class="link-title">🔑 API Keys</div>
+                        <div class="link-url">zius.uk/dashboard/tools/keys</div>
+                    </a>
+                    <a href="https://zius.uk/dashboard/tools/webhooks" class="link-card" target="_blank">
+                        <div class="link-title">🔗 Webhooks</div>
+                        <div class="link-url">zius.uk/dashboard/tools/webhooks</div>
+                    </a>
+                    <a href="https://zius.uk/dashboard/hosts/whatsapp" class="link-card" target="_blank">
+                        <div class="link-title">💬 WhatsApp Setup</div>
+                        <div class="link-url">zius.uk/dashboard/hosts/whatsapp</div>
+                    </a>
+                    <a href="https://zius.uk/dashboard/hosts/android" class="link-card" target="_blank">
+                        <div class="link-title">📱 Android Setup</div>
+                        <div class="link-url">zius.uk/dashboard/hosts/android</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contacts Section -->
+        <div id="contacts" class="section">
+            <!-- Create Contact -->
+            <div class="api-card">
+                <div class="api-header">
+                    <div>
+                        <h3 class="api-title">Create Contact</h3>
+                        <span class="permission">🔒 Permission: create_contact</span>
+                    </div>
+                    <span class="method-badge method-post">POST</span>
+                </div>
+                
+                <div class="endpoint">/api/create/contact</div>
+                
+                <div class="params-section">
+                    <h4 class="section-title">Parameters</h4>
+                    <div class="param">
+                        <span class="param-name">secret</span>
+                        <span class="param-required">required</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">Your API secret key from Tools → API Keys</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">phone</span>
+                        <span class="param-required">required</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">E.164 format (+201001234567) or Local format (01001234567)</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">name</span>
+                        <span class="param-required">required</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">Contact name</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">groups</span>
+                        <span class="param-required">required</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">Comma-separated list of group IDs</div>
+                    </div>
+                </div>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-lang">cURL</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>curl -X POST "https://zius.uk/api/create/contact" \
+     -H "Content-Type: multipart/form-data" \
+     -F "secret=YOUR_API_SECRET" \
+     -F "phone=+201001234567" \
+     -F "name=John Doe" \
+     -F "groups=1,2,3"</code></pre>
+                </div>
+
+                <div class="response-example">
+                    <span class="response-badge">200 OK</span>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-lang">JSON Response</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>{
+  "status": 200,
+  "message": "Contact has been created!",
+  "data": false
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Get Contacts -->
+            <div class="api-card">
+                <div class="api-header">
+                    <div>
+                        <h3 class="api-title">Get Contacts</h3>
+                        <span class="permission">🔒 Permission: get_contacts</span>
+                    </div>
+                    <span class="method-badge method-get">GET</span>
+                </div>
+                
+                <div class="endpoint">/api/get/contacts</div>
+                
+                <div class="params-section">
+                    <h4 class="section-title">Parameters</h4>
+                    <div class="param">
+                        <span class="param-name">secret</span>
+                        <span class="param-required">required</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">Your API secret key</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">limit</span>
+                        <span class="param-type">number</span>
+                        <div class="param-desc">Results per page (default: 10)</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">page</span>
+                        <span class="param-type">number</span>
+                        <div class="param-desc">Page number (default: 1)</div>
+                    </div>
+                </div>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-lang">cURL</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>curl -X GET "https://zius.uk/api/get/contacts?secret=YOUR_API_SECRET&limit=10&page=1" \
+     -H "Content-Type: application/json"</code></pre>
+                </div>
+
+                <div class="response-example">
+                    <span class="response-badge">200 OK</span>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-lang">JSON Response</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>{
+  "status": 200,
+  "message": "Saved Contacts",
+  "data": [
+    {
+      "id": 2,
+      "groups": ["1"],
+      "phone": "+201001234567",
+      "name": "Shane"
+    },
+    {
+      "id": 3,
+      "groups": ["1", "9", "10"],
+      "phone": "+201001234567",
+      "name": "Terry Bom"
+    }
+  ]
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Contact -->
+            <div class="api-card">
+                <div class="api-header">
+                    <div>
+                        <h3 class="api-title">Delete Contact</h3>
+                        <span class="permission">🔒 Permission: delete_contact</span>
+                    </div>
+                    <span class="method-badge method-get">GET</span>
+                </div>
+                
+                <div class="endpoint">/api/delete/contact</div>
+                
+                <div class="params-section">
+                    <h4 class="section-title">Parameters</h4>
+                    <div class="param">
+                        <span class="param-name">secret</span>
+                        <span class="param-required">required</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">Your API secret key</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">id</span>
+                        <span class="param-required">required</span>
+                        <span class="param-type">number</span>
+                        <div class="param-desc">Contact ID to delete</div>
+                    </div>
+                </div>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-lang">cURL</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>curl -X GET "https://zius.uk/api/delete/contact?secret=YOUR_API_SECRET&id=123" \
+     -H "Content-Type: application/json"</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- WhatsApp Section -->
+        <div id="whatsapp" class="section">
+            <!-- Send Single WhatsApp -->
+            <div class="api-card">
+                <div class="api-header">
+                    <div>
+                        <h3 class="api-title">Send Single WhatsApp Message</h3>
+                        <span class="permission">🔒 Permission: wa_send</span>
+                    </div>
+                    <span class="method-badge method-post">POST</span>
+                </div>
+                
+                <div class="endpoint">/api/send/whatsapp</div>
+                
+                <div class="params-section">
+                    <h4 class="section-title">Required Parameters</h4>
+                    <div class="param">
+                        <span class="param-name">secret</span>
+                        <span class="param-required">required</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">Your API secret key</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">account</span>
+                        <span class="param-required">required</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">WhatsApp account unique ID</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">recipient</span>
+                        <span class="param-required">required</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">Phone number (E.164 or local format) or group address</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">message</span>
+                        <span class="param-required">required</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">Message text or caption (supports Spintax)</div>
+                    </div>
+                </div>
+
+                <div class="params-section">
+                    <h4 class="section-title">Optional Parameters</h4>
+                    <div class="param">
+                        <span class="param-name">type</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">Message type: "text", "media", or "document" (default: "text")</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">priority</span>
+                        <span class="param-type">number</span>
+                        <div class="param-desc">1 for immediate send, 2 for normal (default: 2)</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">media_file</span>
+                        <span class="param-type">binary</span>
+                        <div class="param-desc">Media file for "media" type (jpg, png, gif, mp4, mp3, ogg)</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">media_url</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">Direct URL to media file</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">media_type</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">"image", "audio", or "video" (required with media_url)</div>
+                    </div>
+                </div>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-lang">cURL - Text Message</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>curl -X POST "https://zius.uk/api/send/whatsapp" \
+     -H "Content-Type: multipart/form-data" \
+     -F "secret=YOUR_API_SECRET" \
+     -F "account=WHATSAPP_ACCOUNT_ID" \
+     -F "recipient=+201001234567" \
+     -F "type=text" \
+     -F "message=Hello! This is a test message."</code></pre>
+                </div>
+
+                <div class="response-example">
+                    <span class="response-badge">200 OK</span>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-lang">JSON Response</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>{
+  "status": 200,
+  "message": "WhatsApp chat has been sent!",
+  "data": {
+    "messageId": 123
+  }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Send Bulk WhatsApp -->
+            <div class="api-card">
+                <div class="api-header">
+                    <div>
+                        <h3 class="api-title">Send Bulk WhatsApp Messages</h3>
+                        <span class="permission">🔒 Permission: wa_send</span>
+                    </div>
+                    <span class="method-badge method-post">POST</span>
+                </div>
+                
+                <div class="endpoint">/api/send/whatsapp.bulk</div>
+                
+                <div class="params-section">
+                    <h4 class="section-title">Parameters</h4>
+                    <div class="param">
+                        <span class="param-name">secret</span>
+                        <span class="param-required">required</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">Your API secret key</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">account</span>
+                        <span class="param-required">required</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">WhatsApp account unique ID</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">campaign</span>
+                        <span class="param-required">required</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">Campaign name for tracking</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">message</span>
+                        <span class="param-required">required</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">Message text (supports Spintax)</div>
+                    </div>
+                </div>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-lang">cURL</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>curl -X POST "https://zius.uk/api/send/whatsapp.bulk" \
+     -H "Content-Type: application/x-www-form-urlencoded" \
+     -d "secret=YOUR_API_SECRET" \
+     -d "account=WHATSAPP_ACCOUNT_ID" \
+     -d "campaign=Spring Sale 2024" \
+     -d "type=text" \
+     -d "message=Special offer just for you!"</code></pre>
+                </div>
+
+                <div class="response-example">
+                    <span class="response-badge">200 OK</span>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-lang">JSON Response</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>{
+  "status": 200,
+  "message": "5 chats has been queued for sending!",
+  "data": {
+    "campaignId": 123,
+    "messageIds": [456, 457, 458, 459, 460]
+  }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Validate WhatsApp Number -->
+            <div class="api-card">
+                <div class="api-header">
+                    <div>
+                        <h3 class="api-title">Validate WhatsApp Phone Number</h3>
+                        <span class="permission">🔒 Permission: validate_wa_phone</span>
+                    </div>
+                    <span class="method-badge method-get">GET</span>
+                </div>
+                
+                <div class="endpoint">/api/validate/whatsapp</div>
+                
+                <div class="params-section">
+                    <h4 class="section-title">Parameters</h4>
+                    <div class="param">
+                        <span class="param-name">secret</span>
+                        <span class="param-required">required</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">Your API secret key</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">unique</span>
+                        <span class="param-required">required</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">WhatsApp account unique ID</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">phone</span>
+                        <span class="param-required">required</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">E.164 formatted phone number</div>
+                    </div>
+                </div>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-lang">cURL</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>curl -X GET "https://zius.uk/api/validate/whatsapp?secret=YOUR_API_SECRET&unique=WA_ID&phone=+201001234567" \
+     -H "Content-Type: application/json"</code></pre>
+                </div>
+
+                <div class="response-example">
+                    <span class="response-badge">200 OK</span>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-lang">JSON Response</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>{
+  "status": 200,
+  "message": "WhatsApp phone number is valid!",
+  "data": {
+    "jid": "+201001234567@s.whatsapp.net",
+    "phone": "+201001234567"
+  }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Android Section -->
+        <div id="android" class="section">
+            <!-- Get Devices -->
+            <div class="api-card">
+                <div class="api-header">
+                    <div>
+                        <h3 class="api-title">Get Android Devices</h3>
+                        <span class="permission">🔒 Permission: get_devices</span>
+                    </div>
+                    <span class="method-badge method-get">GET</span>
+                </div>
+                
+                <div class="endpoint">/api/get/devices</div>
+                
+                <div class="params-section">
+                    <h4 class="section-title">Parameters</h4>
+                    <div class="param">
+                        <span class="param-name">secret</span>
+                        <span class="param-required">required</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">Your API secret key</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">limit</span>
+                        <span class="param-type">number</span>
+                        <div class="param-desc">Results per page (default: 10)</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">page</span>
+                        <span class="param-type">number</span>
+                        <div class="param-desc">Page number (default: 1)</div>
+                    </div>
+                </div>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-lang">cURL</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>curl -X GET "https://zius.uk/api/get/devices?secret=YOUR_API_SECRET&limit=10&page=1" \
+     -H "Content-Type: application/json"</code></pre>
+                </div>
+
+                <div class="response-example">
+                    <span class="response-badge">200 OK</span>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-lang">JSON Response</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>{
+  "status": 200,
+  "message": "Android Devices",
+  "data": [
+    {
+      "id": "49",
+      "unique": "00000000-0000-0000-d57d-f30cb6a89289",
+      "name": "F11 Phone",
+      "version": "Android 11",
+      "manufacturer": "OPPO",
+      "limit_status": true,
+      "limit_interval": "daily",
+      "limit_number": 100,
+      "created": 1636462504
+    }
+  ]
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Send USSD -->
+            <div class="api-card">
+                <div class="api-header">
+                    <div>
+                        <h3 class="api-title">Send USSD Request</h3>
+                        <span class="permission">🔒 Permission: ussd</span>
+                    </div>
+                    <span class="method-badge method-post">POST</span>
+                </div>
+                
+                <div class="endpoint">/api/send/ussd</div>
+                
+                <p style="color: var(--text-secondary); margin: 15px 0;">
+                    Send USSD codes to check balance, activate services, and perform network operations.
+                </p>
+                
+                <div class="params-section">
+                    <h4 class="section-title">Parameters</h4>
+                    <div class="param">
+                        <span class="param-name">secret</span>
+                        <span class="param-required">required</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">Your API secret key</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">code</span>
+                        <span class="param-required">required</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">MMI request code (e.g., *123#)</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">sim</span>
+                        <span class="param-required">required</span>
+                        <span class="param-type">number</span>
+                        <div class="param-desc">SIM slot number (1 or 2)</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">device</span>
+                        <span class="param-required">required</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">Device unique ID from /get/devices</div>
+                    </div>
+                </div>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-lang">cURL</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>curl -X POST "https://zius.uk/api/send/ussd" \
+     -H "Content-Type: multipart/form-data" \
+     -F "secret=YOUR_API_SECRET" \
+     -F "code=*123#" \
+     -F "sim=1" \
+     -F "device=00000000-0000-0000-d57d-f30cb6a89289"</code></pre>
+                </div>
+            </div>
+
+            <!-- Get USSD Requests -->
+            <div class="api-card">
+                <div class="api-header">
+                    <div>
+                        <h3 class="api-title">Get USSD Requests</h3>
+                        <span class="permission">🔒 Permission: get_ussd</span>
+                    </div>
+                    <span class="method-badge method-get">GET</span>
+                </div>
+                
+                <div class="endpoint">/api/get/ussd</div>
+                
+                <div class="params-section">
+                    <h4 class="section-title">Parameters</h4>
+                    <div class="param">
+                        <span class="param-name">secret</span>
+                        <span class="param-required">required</span>
+                        <span class="param-type">string</span>
+                        <div class="param-desc">Your API secret key</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">limit</span>
+                        <span class="param-type">number</span>
+                        <div class="param-desc">Results per page (default: 10)</div>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">page</span>
+                        <span class="param-type">number</span>
+                        <div class="param-desc">Page number (default: 1)</div>
+                    </div>
+                </div>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-lang">cURL</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>curl -X GET "https://zius.uk/api/get/ussd?secret=YOUR_API_SECRET&limit=10&page=1" \
+     -H "Content-Type: application/json"</code></pre>
+                </div>
+
+                <div class="response-example">
+                    <span class="response-badge">200 OK</span>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-lang">JSON Response</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>{
+  "status": 200,
+  "message": "USSD Requests",
+  "data": [
+    {
+      "id": 5,
+      "device": "00000000-0000-0000-d57d-f30cb6a89289",
+      "sim": 1,
+      "code": "*143#",
+      "response": "Your balance is 14.60",
+      "status": "completed",
+      "created": 1645043019
+    }
+  ]
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Start Section -->
+        <div id="quickstart" class="section">
+            <div class="api-card">
+                <h2 style="color: var(--primary); margin-bottom: 20px;">🚀 Quick Start Guide</h2>
+                
+                <div style="background: var(--bg-tertiary); padding: 25px; border-radius: 10px; margin: 20px 0;">
+                    <h3 style="color: var(--secondary); margin-bottom: 15px;">Step 1: Get Your API Credentials</h3>
+                    <ol style="color: var(--text-secondary); margin-left: 20px; line-height: 2;">
+                        <li>Sign up or login at <a href="https://zius.uk/dashboard" style="color: var(--primary);">zius.uk/dashboard</a></li>
+                        <li>Navigate to <strong>Tools → API Keys</strong></li>
+                        <li>Generate or copy your API secret key</li>
+                        <li>Keep your API secret secure - never expose it in client-side code</li>
+                    </ol>
+                </div>
+
+                <div style="background: var(--bg-tertiary); padding: 25px; border-radius: 10px; margin: 20px 0;">
+                    <h3 style="color: var(--secondary); margin-bottom: 15px;">Step 2: Connect Your Gateway</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 15px;">Choose one or both:</p>
+                    <ul style="color: var(--text-secondary); margin-left: 20px; line-height: 2;">
+                        <li><strong>WhatsApp:</strong> Visit <a href="https://zius.uk/dashboard/hosts/whatsapp" style="color: var(--primary);">zius.uk/dashboard/hosts/whatsapp</a></li>
+                        <li><strong>Android SMS:</strong> Visit <a href="https://zius.uk/dashboard/hosts/android" style="color: var(--primary);">zius.uk/dashboard/hosts/android</a></li>
+                    </ul>
+                </div>
+
+                <div style="background: var(--bg-tertiary); padding: 25px; border-radius: 10px; margin: 20px 0;">
+                    <h3 style="color: var(--secondary); margin-bottom: 15px;">Step 3: Make Your First API Call</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 15px;">Example: Send a WhatsApp message</p>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-lang">JavaScript (Node.js)</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>const FormData = require('form-data');
+const axios = require('axios');
+
+const formData = new FormData();
+formData.append('secret', 'YOUR_API_SECRET');
+formData.append('account', 'YOUR_WHATSAPP_ACCOUNT_ID');
+formData.append('recipient', '+201001234567');
+formData.append('type', 'text');
+formData.append('message', 'Hello from Zius API!');
+
+axios.post('https://zius.uk/api/send/whatsapp', formData, {
+  headers: formData.getHeaders()
+})
+.then(response => {
+  console.log('Success:', response.data);
+})
+.catch(error => {
+  console.error('Error:', error.response.data);
+});</code></pre>
+                    </div>
+
+                    <div class="code-container" style="margin-top: 20px;">
+                        <div class="code-header">
+                            <span class="code-lang">Python</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>import requests
+
+url = 'https://zius.uk/api/send/whatsapp'
+data = {
+    'secret': 'YOUR_API_SECRET',
+    'account': 'YOUR_WHATSAPP_ACCOUNT_ID',
+    'recipient': '+201001234567',
+    'type': 'text',
+    'message': 'Hello from Zius API!'
+}
+
+response = requests.post(url, data=data)
+print(response.json())</code></pre>
+                    </div>
+
+                    <div class="code-container" style="margin-top: 20px;">
+                        <div class="code-header">
+                            <span class="code-lang">PHP</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>$curl = curl_init();
+
+curl_setopt_array($curl, [
+  CURLOPT_URL => "https://zius.uk/api/send/whatsapp",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_POST => true,
+  CURLOPT_POSTFIELDS => [
+    'secret' => 'YOUR_API_SECRET',
+    'account' => 'YOUR_WHATSAPP_ACCOUNT_ID',
+    'recipient' => '+201001234567',
+    'type' => 'text',
+    'message' => 'Hello from Zius API!'
+  ]
+]);
+
+$response = curl_exec($curl);
+curl_close($curl);
+
+echo $response;</code></pre>
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-tertiary); padding: 25px; border-radius: 10px; margin: 20px 0;">
+                    <h3 style="color: var(--secondary); margin-bottom: 15px;">Step 4: Best Practices</h3>
+                    <ul style="color: var(--text-secondary); margin-left: 20px; line-height: 2;">
+                        <li>✅ Always use HTTPS for API requests</li>
+                        <li>✅ Implement proper error handling</li>
+                        <li>✅ Use E.164 phone number format (+countrycode + number)</li>
+                        <li>✅ Test with small groups before bulk campaigns</li>
+                        <li>✅ Monitor delivery status through the dashboard</li>
+                        <li>✅ Use Spintax to randomize messages and avoid spam filters</li>
+                        <li>✅ Set up webhooks for automated responses</li>
+                        <li>⚠️ Never expose API keys in client-side code</li>
+                        <li>⚠️ Respect rate limits to avoid throttling</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2024 Zius - WhatsApp & SMS Gateway Platform</p>
+        <p style="margin-top: 10px;">
+            <a href="https://zius.uk" style="color: var(--primary);">zius.uk</a> | 
+            <a href="https://zius.uk/dashboard" style="color: var(--primary);">Dashboard</a> | 
+            <a href="https://zius.uk/dashboard/docs" style="color: var(--primary);">API Docs</a>
+        </p>
+    </footer>
+
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update tab buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-container').querySelector('code');
+            const textToCopy = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        }
+    </script>
+</body>
+</html>
