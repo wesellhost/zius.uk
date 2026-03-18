@@ -1,0 +1,689 @@
+================================================================================
+                    ZIUS API DOCUMENTATION
+================================================================================
+
+PLATFORM OVERVIEW
+================================================================================
+
+Zius is a comprehensive WhatsApp and SMS gateway platform that enables businesses
+to automate marketing, notifications, and bulk messaging through a powerful API
+and web dashboard.
+
+Main Website: https://zius.uk
+Dashboard: https://zius.uk/dashboard
+API Documentation: https://zius.uk/dashboard/docs
+API Keys Management: https://zius.uk/dashboard/tools/keys
+
+CORE FEATURES
+================================================================================
+
+1. QUICK AND BULK MESSAGING
+   - Send tons of messages to different contact groups
+   - Quick messages for fast transactions
+   - Live dashboard notifications
+   - Shortcodes for predefined data
+   - Spintax for randomizing words to battle spam
+   - Built-in translator for multilingual campaigns
+
+2. MESSAGING GATEWAYS
+   - WhatsApp Messaging: Full-featured WhatsApp API integration
+   - SMS Messaging: Use Android devices as SMS gateway
+   - Partner Program: Earn money using your Android devices as gateway
+
+3. AUTOMATION TOOLS
+   - Schedule: Time SMS and WhatsApp messages for specific dates
+   - Webhooks: Automate tasks when receiving messages
+   - Actions: Create auto-responses and quick data checks
+   - USSD: Perform network-related requests (balance checks, etc.)
+   - Notifications: Use connected Android devices for automated tasks
+
+AUTHENTICATION
+================================================================================
+
+All API requests require authentication using an API secret key.
+
+Get your API secret from: https://zius.uk/dashboard/tools/keys
+
+Authentication is provided via the 'secret' parameter in every API request.
+
+BASE URL
+================================================================================
+
+All API endpoints use the base URL:
+https://zius.uk/api
+
+
+================================================================================
+                    CONTACT MANAGEMENT APIs
+================================================================================
+
+1. CREATE CONTACT
+--------------------------------------------------------------------------------
+Create a new contact in your Zius account.
+
+Endpoint: POST /api/create/contact
+Permission Required: create_contact
+
+Request Parameters:
+- secret (required, string): Your API secret key
+- phone (required, string): Recipient mobile number
+  Formats: E.164 (+201001234567) or Local (01001234567)
+- name (required, string): Contact name
+- groups (required, string): Comma-separated list of group IDs
+
+Example cURL Request:
+curl -X POST "https://zius.uk/api/create/contact" \
+     -H "Content-Type: multipart/form-data" \
+     -F "secret=YOUR_API_SECRET" \
+     -F "phone=+201001234567" \
+     -F "name=John Doe" \
+     -F "groups=1,2,3"
+
+Response (200 OK):
+{
+  "status": 200,
+  "message": "Contact has been created!",
+  "data": false
+}
+
+
+2. CREATE GROUP
+--------------------------------------------------------------------------------
+Create a new contact group.
+
+Endpoint: POST /api/create/group
+Permission Required: create_group
+
+Request Parameters:
+- secret (required, string): Your API secret key
+- name (required, string): Group name
+
+Example cURL Request:
+curl -X POST "https://zius.uk/api/create/group" \
+     -H "Content-Type: multipart/form-data" \
+     -F "secret=YOUR_API_SECRET" \
+     -F "name=Marketing Team"
+
+Response (200 OK):
+{
+  "status": 200,
+  "message": "Contact group has been created!",
+  "data": false
+}
+
+
+3. GET CONTACTS
+--------------------------------------------------------------------------------
+Retrieve all contacts with pagination support.
+
+Endpoint: GET /api/get/contacts
+Permission Required: get_contacts
+
+Query Parameters:
+- secret (required, string): Your API secret key
+- limit (optional, number): Results per page (default: 10)
+- page (optional, number): Page number (default: 1)
+
+Example cURL Request:
+curl -X GET "https://zius.uk/api/get/contacts?secret=YOUR_API_SECRET&limit=10&page=1" \
+     -H "Content-Type: application/json"
+
+Response (200 OK):
+{
+  "status": 200,
+  "message": "Saved Contacts",
+  "data": [
+    {
+      "id": 2,
+      "groups": ["1"],
+      "phone": "+201001234567",
+      "name": "Shane"
+    },
+    {
+      "id": 3,
+      "groups": ["1", "9", "10", "11"],
+      "phone": "+201001234567",
+      "name": "Terry Bom"
+    }
+  ]
+}
+
+
+4. GET GROUPS
+--------------------------------------------------------------------------------
+Retrieve all contact groups with pagination support.
+
+Endpoint: GET /api/get/groups
+Permission Required: get_groups
+
+Query Parameters:
+- secret (required, string): Your API secret key
+- limit (optional, number): Results per page (default: 10)
+- page (optional, number): Page number (default: 1)
+
+Example cURL Request:
+curl -X GET "https://zius.uk/api/get/groups?secret=YOUR_API_SECRET&limit=10&page=1" \
+     -H "Content-Type: application/json"
+
+Response (200 OK):
+{
+  "status": 200,
+  "message": "Contact Groups",
+  "data": [
+    {
+      "id": 1,
+      "name": "Marketing Team",
+      "contacts": 150
+    }
+  ]
+}
+
+
+5. DELETE CONTACT
+--------------------------------------------------------------------------------
+Delete a specific contact by ID.
+
+Endpoint: GET /api/delete/contact
+Permission Required: delete_contact
+
+Query Parameters:
+- secret (required, string): Your API secret key
+- id (required, number): Contact ID to delete
+
+Example cURL Request:
+curl -X GET "https://zius.uk/api/delete/contact?secret=YOUR_API_SECRET&id=123" \
+     -H "Content-Type: application/json"
+
+Response (200 OK):
+{
+  "status": 200,
+  "message": "Contact has been deleted!",
+  "data": false
+}
+
+
+6. DELETE GROUP
+--------------------------------------------------------------------------------
+Delete a specific contact group by ID.
+
+Endpoint: GET /api/delete/group
+Permission Required: delete_group
+
+Query Parameters:
+- secret (required, string): Your API secret key
+- id (required, number): Group ID to delete
+
+Example cURL Request:
+curl -X GET "https://zius.uk/api/delete/group?secret=YOUR_API_SECRET&id=5" \
+     -H "Content-Type: application/json"
+
+Response (200 OK):
+{
+  "status": 200,
+  "message": "Contact group has been deleted!",
+  "data": false
+}
+
+
+7. DELETE UNSUBSCRIBED CONTACT
+--------------------------------------------------------------------------------
+Delete an unsubscribed contact from your list.
+
+Endpoint: GET /api/delete/unsubscribed
+Permission Required: delete_unsubscribed
+
+Query Parameters:
+- secret (required, string): Your API secret key
+- id (required, number): Contact ID to delete
+
+Example cURL Request:
+curl -X GET "https://zius.uk/api/delete/unsubscribed?secret=YOUR_API_SECRET&id=456" \
+     -H "Content-Type: application/json"
+
+Response (200 OK):
+{
+  "status": 200,
+  "message": "Unsubscribed contact has been deleted!",
+  "data": false
+}
+
+
+================================================================================
+                    WHATSAPP MESSAGING APIs
+================================================================================
+
+1. SEND SINGLE WHATSAPP MESSAGE
+--------------------------------------------------------------------------------
+Send a single WhatsApp message to a recipient.
+
+Endpoint: POST /api/send/whatsapp
+Permission Required: wa_send
+
+Request Parameters:
+- secret (required, string): Your API secret key
+- account (required, string): WhatsApp account unique ID
+- recipient (required, string): Recipient phone number or group address
+  Formats: E.164 (+201001234567) or Local (01001234567)
+- type (optional, string): Message type - "text", "media", or "document" (default: "text")
+- message (required, string): Message text or caption (supports Spintax)
+- priority (optional, number): 1 for immediate send, 2 for normal (default: 2)
+
+Media Type Parameters (when type="media"):
+- media_file (binary): Media file to upload (jpg, png, gif, mp4, mp3, ogg)
+- media_url (string): Direct URL to media file
+- media_type (string): "image", "audio", or "video" (required with media_url)
+
+Document Type Parameters (when type="document"):
+- document_file (binary): Document file to upload (pdf, xml, xls, xlsx, doc, docx)
+- document_url (string): Direct URL to document file
+- document_name (string): File name with extension (required with document_url)
+- document_type (string): File type - "pdf", "xml", "xls", "xlsx", "doc", "docx"
+
+Additional Parameters:
+- shortener (number): Shortener ID for link shortening
+
+Example cURL Request (Text Message):
+curl -X POST "https://zius.uk/api/send/whatsapp" \
+     -H "Content-Type: multipart/form-data" \
+     -F "secret=YOUR_API_SECRET" \
+     -F "account=YOUR_WHATSAPP_ACCOUNT_ID" \
+     -F "recipient=+201001234567" \
+     -F "type=text" \
+     -F "message=Hello! This is a test message."
+
+Response (200 OK):
+{
+  "status": 200,
+  "message": "WhatsApp chat has been sent!",
+  "data": {
+    "messageId": 123
+  }
+}
+
+
+2. SEND BULK WHATSAPP MESSAGES
+--------------------------------------------------------------------------------
+Send WhatsApp messages to multiple recipients in a campaign.
+
+Endpoint: POST /api/send/whatsapp.bulk
+Permission Required: wa_send
+
+Request Parameters:
+- secret (required, string): Your API secret key
+- account (required, string): WhatsApp account unique ID
+- campaign (required, string): Campaign name
+- type (optional, string): Message type - "text", "media", or "document" (default: "text")
+- message (required, string): Message text or caption (supports Spintax)
+
+Media Type Parameters (when type="media"):
+- media_file (binary): Media file to upload
+- media_url (string): Direct URL to media file
+- media_type (string): "image", "audio", or "video"
+
+Document Type Parameters (when type="document"):
+- document_file (binary): Document file to upload
+- document_url (string): Direct URL to document file
+- document_name (string): File name with extension
+- document_type (string): File type
+
+Additional Parameters:
+- shortener (number): Shortener ID for link shortening
+
+Example cURL Request:
+curl -X POST "https://zius.uk/api/send/whatsapp.bulk" \
+     -H "Content-Type: application/x-www-form-urlencoded" \
+     -d "secret=YOUR_API_SECRET" \
+     -d "account=YOUR_WHATSAPP_ACCOUNT_ID" \
+     -d "campaign=Spring Sale 2024" \
+     -d "type=text" \
+     -d "message=Special offer just for you!"
+
+Response (200 OK):
+{
+  "status": 200,
+  "message": "5 chats has been queued for sending!",
+  "data": {
+    "campaignId": 123,
+    "messageIds": [456, 457, 458, 459, 460]
+  }
+}
+
+
+3. START WHATSAPP CAMPAIGN
+--------------------------------------------------------------------------------
+Start or resume a WhatsApp campaign.
+
+Endpoint: GET /api/remote/start.chats
+Permission Required: start_wa_campaign
+
+Query Parameters:
+- secret (required, string): Your API secret key
+- campaign (required, number): Campaign ID to start
+
+Example cURL Request:
+curl -X GET "https://zius.uk/api/remote/start.chats?secret=YOUR_API_SECRET&campaign=123" \
+     -H "Content-Type: application/json"
+
+Response (200 OK):
+{
+  "status": 200,
+  "message": "WhatsApp campaign has been resumed!",
+  "data": false
+}
+
+
+4. STOP WHATSAPP CAMPAIGN
+--------------------------------------------------------------------------------
+Stop or pause a WhatsApp campaign.
+
+Endpoint: GET /api/remote/stop.chats
+Permission Required: stop_wa_campaign
+
+Query Parameters:
+- secret (required, string): Your API secret key
+- campaign (required, number): Campaign ID to stop
+
+Example cURL Request:
+curl -X GET "https://zius.uk/api/remote/stop.chats?secret=YOUR_API_SECRET&campaign=123" \
+     -H "Content-Type: application/json"
+
+Response (200 OK):
+{
+  "status": 200,
+  "message": "WhatsApp campaign has been stopped!",
+  "data": false
+}
+
+
+5. VALIDATE WHATSAPP PHONE NUMBER
+--------------------------------------------------------------------------------
+Check if a phone number exists on WhatsApp.
+
+Endpoint: GET /api/validate/whatsapp
+Permission Required: validate_wa_phone
+
+Query Parameters:
+- secret (required, string): Your API secret key
+- unique (required, string): WhatsApp account unique ID
+- phone (required, string): E.164 formatted phone number
+
+Example cURL Request:
+curl -X GET "https://zius.uk/api/validate/whatsapp?secret=YOUR_API_SECRET&unique=YOUR_WA_ID&phone=+201001234567" \
+     -H "Content-Type: application/json"
+
+Response (200 OK):
+{
+  "status": 200,
+  "message": "WhatsApp phone number is valid!",
+  "data": {
+    "jid": "+201001234567@s.whatsapp.net",
+    "phone": "+201001234567"
+  }
+}
+
+
+================================================================================
+                    ANDROID DEVICE APIs
+================================================================================
+
+1. GET DEVICES
+--------------------------------------------------------------------------------
+Retrieve all connected Android devices.
+
+Endpoint: GET /api/get/devices
+Permission Required: get_devices
+
+Query Parameters:
+- secret (required, string): Your API secret key
+- limit (optional, number): Results per page (default: 10)
+- page (optional, number): Page number (default: 1)
+
+Example cURL Request:
+curl -X GET "https://zius.uk/api/get/devices?secret=YOUR_API_SECRET&limit=10&page=1" \
+     -H "Content-Type: application/json"
+
+Response (200 OK):
+{
+  "status": 200,
+  "message": "Android Devices",
+  "data": [
+    {
+      "id": "49",
+      "unique": "00000000-0000-0000-d57d-f30cb6a89289",
+      "name": "F11 Phone",
+      "version": "Android 11",
+      "manufacturer": "OPPO",
+      "random_send": false,
+      "random_min": 5,
+      "random_max": 10,
+      "limit_status": true,
+      "limit_interval": "daily",
+      "limit_number": 100,
+      "notification_packages": [
+        "com.google.android.apps.messaging",
+        "com.facebook.orca"
+      ],
+      "partner": false,
+      "created": 1636462504
+    }
+  ]
+}
+
+
+2. SEND USSD REQUEST
+--------------------------------------------------------------------------------
+Send a USSD (Unstructured Supplementary Service Data) request to check balance,
+activate services, etc.
+
+Endpoint: POST /api/send/ussd
+Permission Required: ussd
+
+Request Parameters:
+- secret (required, string): Your API secret key
+- code (required, string): MMI request code (e.g., *123#)
+- sim (required, number): SIM slot number (1 or 2)
+- device (required, string): Device unique ID
+
+Example cURL Request:
+curl -X POST "https://zius.uk/api/send/ussd" \
+     -H "Content-Type: multipart/form-data" \
+     -F "secret=YOUR_API_SECRET" \
+     -F "code=*123#" \
+     -F "sim=1" \
+     -F "device=00000000-0000-0000-d57d-f30cb6a89289"
+
+Response (200 OK):
+{
+  "status": 200,
+  "message": "USSD request has been sent!",
+  "data": false
+}
+
+
+3. GET USSD REQUESTS
+--------------------------------------------------------------------------------
+Retrieve all USSD requests and their responses.
+
+Endpoint: GET /api/get/ussd
+Permission Required: get_ussd
+
+Query Parameters:
+- secret (required, string): Your API secret key
+- limit (optional, number): Results per page (default: 10)
+- page (optional, number): Page number (default: 1)
+
+Example cURL Request:
+curl -X GET "https://zius.uk/api/get/ussd?secret=YOUR_API_SECRET&limit=10&page=1" \
+     -H "Content-Type: application/json"
+
+Response (200 OK):
+{
+  "status": 200,
+  "message": "USSD Requests",
+  "data": [
+    {
+      "id": 5,
+      "device": "00000000-0000-0000-d57d-f30cb6a89289",
+      "sim": 1,
+      "code": "*143#",
+      "response": "Your balance is 14.60",
+      "status": "completed",
+      "created": 1645043019
+    }
+  ]
+}
+
+
+4. DELETE USSD REQUEST
+--------------------------------------------------------------------------------
+Delete a specific USSD request by ID.
+
+Endpoint: GET /api/delete/ussd
+Permission Required: delete_ussd
+
+Query Parameters:
+- secret (required, string): Your API secret key
+- id (required, number): USSD request ID
+
+Example cURL Request:
+curl -X GET "https://zius.uk/api/delete/ussd?secret=YOUR_API_SECRET&id=5" \
+     -H "Content-Type: application/json"
+
+Response (200 OK):
+{
+  "status": 200,
+  "message": "USSD request has been deleted!",
+  "data": false
+}
+
+
+5. DELETE ANDROID NOTIFICATION
+--------------------------------------------------------------------------------
+Delete a specific Android notification by ID.
+
+Endpoint: GET /api/delete/notification
+Permission Required: delete_notification
+
+Query Parameters:
+- secret (required, string): Your API secret key
+- id (required, number): Notification ID
+
+Example cURL Request:
+curl -X GET "https://zius.uk/api/delete/notification?secret=YOUR_API_SECRET&id=10" \
+     -H "Content-Type: application/json"
+
+Response (200 OK):
+{
+  "status": 200,
+  "message": "Notification has been deleted!",
+  "data": false
+}
+
+
+================================================================================
+                    RESPONSE CODES & ERROR HANDLING
+================================================================================
+
+SUCCESS RESPONSES
+--------------------------------------------------------------------------------
+- 200: Request successful
+- Data structure: { "status": 200, "message": "Success message", "data": {...} }
+
+ERROR RESPONSES
+--------------------------------------------------------------------------------
+Common error scenarios:
+- Invalid API secret
+- Missing required parameters
+- Insufficient permissions
+- Resource not found
+- Rate limiting
+
+Error Response Format:
+{
+  "status": 400,
+  "message": "Error description",
+  "data": false
+}
+
+
+================================================================================
+                    BEST PRACTICES
+================================================================================
+
+1. SECURITY
+   - Keep your API secret secure and never expose it in client-side code
+   - Regenerate API keys periodically
+   - Use HTTPS for all API requests
+
+2. RATE LIMITING
+   - Respect API rate limits to avoid throttling
+   - Implement exponential backoff for failed requests
+   - Monitor your usage through the dashboard
+
+3. ERROR HANDLING
+   - Always check response status codes
+   - Implement proper error handling in your application
+   - Log errors for debugging purposes
+
+4. PHONE NUMBER FORMATTING
+   - Use E.164 format for international compatibility (+201001234567)
+   - Verify phone numbers before sending bulk messages
+   - Use the validation endpoint for WhatsApp numbers
+
+5. MESSAGE OPTIMIZATION
+   - Use Spintax to randomize messages and avoid spam filters
+   - Use shortcodes for personalized messages
+   - Schedule messages during optimal engagement times
+   - Monitor delivery status through the dashboard
+
+6. BULK MESSAGING
+   - Group contacts logically for targeted campaigns
+   - Test messages with small groups before full campaigns
+   - Monitor campaign performance in real-time
+   - Use webhooks for automated follow-ups
+
+
+================================================================================
+                    WEBHOOK INTEGRATION
+================================================================================
+
+Zius supports webhooks for automated event handling:
+- Receive real-time notifications for incoming messages
+- Trigger automated responses
+- Integrate with third-party systems
+- Build custom workflows
+
+Manage webhooks at: https://zius.uk/dashboard/tools/webhooks
+
+
+================================================================================
+                    GETTING STARTED
+================================================================================
+
+1. Sign up at: https://zius.uk/dashboard
+2. Generate your API secret: https://zius.uk/dashboard/tools/keys
+3. Connect your WhatsApp account: https://zius.uk/dashboard/hosts/whatsapp
+4. Or connect Android device for SMS: https://zius.uk/dashboard/hosts/android
+5. Start sending messages using the API endpoints above
+
+For complete API documentation and updates, visit:
+https://zius.uk/dashboard/docs
+
+
+================================================================================
+                    SUPPORT & RESOURCES
+================================================================================
+
+Official Website: https://zius.uk
+Dashboard Login: https://zius.uk/dashboard
+API Documentation: https://zius.uk/dashboard/docs
+API Keys: https://zius.uk/dashboard/tools/keys
+Webhooks: https://zius.uk/dashboard/tools/webhooks
+Flows: https://zius.uk/dashboard/tools/flows
+
+For support and questions, visit the dashboard or contact through the website.
+
+
+================================================================================
+END OF DOCUMENTATION
+================================================================================
